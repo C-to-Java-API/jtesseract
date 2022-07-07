@@ -86,12 +86,12 @@ jobs:
           test-bot: false
 
       - name: install deps
-        shell: /bin/bash
+        shell: bash
         run: |
           make deps
 
       - name: make jar
-        shell: /bin/bash
+        shell: bash
         run: |
           export PATH=${PATH}:/tmp/deps/jextract/build/jextract/bin
           make jar package=com.jtesseract
