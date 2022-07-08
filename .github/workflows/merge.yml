@@ -92,7 +92,7 @@ jobs:
 
       - name: tesseract version
         id: version
-        run: echo "::set-output name=version::$(pkg-config --cflags tesseract)"
+        run: echo "::set-output name=version::$(pkg-config --modversion tesseract)"
 
       - name: Publish package
         run: |
