@@ -88,11 +88,12 @@ jobs:
       - name: install deps
         shell: bash
         run: |
-          make deps
+          make install-deps
 
       - name: make jar
         shell: bash
         run: |
+          export JAVA_HOME=${{ matrix.JAVA19_HOME }}
           export PATH=${PATH}:/tmp/deps/jextract/build/jextract/bin
           make jar package=com.jtesseract
 
