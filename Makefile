@@ -13,7 +13,7 @@ JAR_NAME = $(LIB).$(VERSION).$(PLATFORM).$(ARCH)
 JAVA_SOURCES_PATH = $(BUILD_DIR)/src/main/java
 
 INCLUDE_FLAGS = $(shell pkg-config --cflags tesseract)
-C_API_INCLUDE_DIR = /usr/local/Cellar/tesseract/$(VERSION)/include
+C_API_INCLUDE_DIR = $(shell brew --cellar)/tesseract/$(VERSION)/include
 C_API_FILE = $(C_API_INCLUDE_DIR)/tesseract/capi.h
 
 STDLIB_INCLUDE = /usr/include
@@ -26,7 +26,7 @@ MAVEN_FLAGS = -Dversion=$(VERSION) -Dos=$(PLATFORM) -Darch=$(ARCH) -Dclassifiers
 all: clean uninstall-deps install-deps jar
 
 install-deps:
-	brew install tesseract tesseract-lang
+	brew install pkg-config tesseract tesseract-lang
 
 uninstall-deps:
 	brew uninstall --ignore-dependencies --force tesseract tesseract-lang
