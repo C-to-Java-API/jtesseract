@@ -109,6 +109,8 @@ jobs:
             build/*.jar
 
       - name: Publish package
-        run: mvn --batch-mode deploy
+        run: |
+          export TESSERACT_VERSION=$()
+          mvn --batch-mode deploy -Dversion=5.2.0 -Dos=${{ matrix.TARGET }} -Darch=x86_64
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
