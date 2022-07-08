@@ -37,9 +37,18 @@ java-src: clean
 jar: java-src
 	mvn clean package $(MAVEN_FLAGS)
 
-release: jar
-	mvn --batch-mode deploy $(MAVEN_FLAGS)
+deploy-jar: jar
+	mvn deploy:deploy-file \
+		  -DgroupId=clang \
+		  -DartifactId=jtesseract \
+		  -Dpackaging=jar \
+		  -Dfile=target/jtesseract.5.2.0-macos.jar \
+		  -DrepositoryId=github \
+		  -Durl=https://maven.pkg.github.com/c-to-java-api/jtesseract \
+		  -Dversion=$(VERSION)-$(PLATFORM)
 
 clean:
+	rm -f *-$(PLATFORM).xml
+	rm -f *-$(PLATFORM).jar
 	rm -fr $(BUILD_DIR)
 	mvn clean $(MAVEN_FLAGS)
