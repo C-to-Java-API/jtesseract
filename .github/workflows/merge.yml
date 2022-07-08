@@ -97,20 +97,23 @@ jobs:
           export PATH=${PATH}:/tmp/deps/jextract/build/jextract/bin
           make jar package=com.jtesseract
 
-      - name: 'make a release'
-        uses: marvinpinto/action-automatic-releases@latest
-        with:
-          repo_token: ${{ secrets.GH_RELEASE_TOKEN }}
-          automatic_release_tag: ${{ steps.date.outputs.date }}
-          prerelease: false
-          title: libcv-c-api ${{ steps.date.outputs.date }} release
-          files: |
-            LICENSE
-            build/*.jar
+      - name: tesseract version
+        id: version
+        run: echo "::set-output name=version::$(pkg-config --cflags tesseract)"
 
       - name: Publish package
         run: |
-          export TESSERACT_VERSION=$()
-          mvn --batch-mode deploy -Dversion=5.2.0 -Dos=${{ matrix.TARGET }} -Darch=x86_64
+          make release package=com.jtesseract
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 'make release'
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: ${{ secrets.GH_RELEASE_TOKEN }}
+          automatic_release_tag: ${{ steps.version.outputs.version }}
+          prerelease: false
+          title: jtesseract ${{ steps.version.outputs.version }} release
+          files: |
+            LICENSE
+            target/*.jar
