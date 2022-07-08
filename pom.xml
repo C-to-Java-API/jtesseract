@@ -57,6 +57,13 @@
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.8.0</version>
+                    <configuration>
+                        <source>${maven.compiler.source}</source>
+                        <target>${maven.compiler.target}</target>
+                        <compilerArgs>
+                            <arg>--enable-preview</arg>
+                        </compilerArgs>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <artifactId>maven-jar-plugin</artifactId>
@@ -67,16 +74,9 @@
                                 <addClasspath>true</addClasspath>
                             </manifest>
                         </archive>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-install-plugin</artifactId>
-                    <version>3.0.0-M1</version>
-                    <configuration>
-                        <file>
-                            ${project.artifactId}.${project.version}.${os}.${arch}.jar
-                        </file>
-                        <classifier>${os}</classifier>
+                        <classifier>
+                            ${os}
+                        </classifier>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -87,7 +87,7 @@
                             ${project.artifactId}.${project.version}.${os}.${arch}.jar
                         </file>
                         <classifier>
-                            <classifier>${os}</classifier>
+                            ${os}
                         </classifier>
                     </configuration>
                 </plugin>
@@ -101,22 +101,14 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
-                    <compilerArgs>
-                        <arg>--enable-preview</arg>
-                    </compilerArgs>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <finalName>
-                        ${project.artifactId}.${project.version}.${os}.${arch}
-                    </finalName>
-                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
