@@ -21,6 +21,7 @@ ifeq ($(UNAME_S), Darwin)
 	STDLIB_INCLUDE = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include
 endif
 
+MAVEN_FLAGS = -Dversion=$(VERSION) -Dos=$(PLATFORM) -Darch=$(ARCH) -Dclassifiers=$(PLATFORM)
 
 all: clean uninstall-deps install-deps jar
 
@@ -34,11 +35,11 @@ java-src: clean
 	jextract --source -t $(package) -I $(STDLIB_INCLUDE) $(CFLAGS) --header-class-name c_api --output $(JAVA_SOURCES_PATH) $(args) $(C_API_FILE)
 
 jar: java-src
-	mvn clean package -Dversion=$(VERSION) -Dos=$(PLATFORM) -Darch=$(ARCH)
+	mvn clean package $(MAVEN_FLAGS)
 
 release: jar
-	mvn --batch-mode deploy -Dversion=$(VERSION) -Dos=$(PLATFORM) -Darch=$(ARCH)
+	mvn --batch-mode deploy $(MAVEN_FLAGS)
 
 clean:
 	rm -fr $(BUILD_DIR)
-	mvn clean -Dversion=$(VERSION)
+	mvn clean $(MAVEN_FLAGS)
