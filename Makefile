@@ -36,6 +36,9 @@ java-src: clean
 jar: java-src
 	mvn clean package -Dversion=$(VERSION) -Dos=$(PLATFORM) -Darch=$(ARCH)
 
+release: jar
+	mvn --batch-mode deploy -Dversion=$(VERSION) -Dos=$(PLATFORM) -Darch=$(ARCH)
+
 clean:
 	rm -fr $(BUILD_DIR)
 	mvn clean -Dversion=$(VERSION)
