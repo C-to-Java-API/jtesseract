@@ -42,7 +42,7 @@ deploy-jar: jar
 		  -DgroupId=clang \
 		  -DartifactId=jtesseract \
 		  -Dpackaging=jar \
-		  -Dfile=target/jtesseract.5.2.0-macos.jar \
+		  -Dfile=target/jtesseract.$(VERSION)-$(PLATFORM).jar \
 		  -DrepositoryId=github \
 		  -Durl=https://maven.pkg.github.com/c-to-java-api/jtesseract \
 		  -Dversion=$(VERSION)-$(PLATFORM)
