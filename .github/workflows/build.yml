@@ -13,12 +13,16 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest]
+        os: [macos-latest, ubuntu-latest]
         include:
           - os: macos-latest
             TARGET: macos
             CLANG_TARGET: apple-darwin
             JAVA19_HOME: /tmp/deps/jdk-19/jdk-19.jdk/Contents/Home
+          - os: ubuntu-latest
+            TARGET: linux
+            CLANG_TARGET: linux-gnu-ubuntu-20.04
+            JAVA19_HOME: /tmp/deps/jdk-19
 
     steps:
       - name: 'Download JDK 19'
@@ -90,9 +94,31 @@ jobs:
         run: |
           make install-deps
 
+      - name: tesseract version
+        id: version
+        run: echo "::set-output name=version::$(pkg-config --modversion tesseract)"
+
       - name: make jar
         shell: bash
         run: |
           export JAVA_HOME=${{ matrix.JAVA19_HOME }}
           export PATH=${PATH}:/tmp/deps/jextract/build/jextract/bin
           make jar package=com.jtesseract
+
+      - name: upload platform-specific JAR to artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          path: target/*.jar
+          if-no-files-found: error
+
+  access-jars:
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    steps:
+      - name: download JARs
+        uses: actions/download-artifact@v3
+        with:
+          path: target/jars
+      - name: test presence
+        run: |
+          ls -lah target/jars/artifact

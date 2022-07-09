@@ -13,12 +13,16 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest]
+        os: [macos-latest, ubuntu-latest]
         include:
           - os: macos-latest
             TARGET: macos
             CLANG_TARGET: apple-darwin
             JAVA19_HOME: /tmp/deps/jdk-19/jdk-19.jdk/Contents/Home
+          - os: ubuntu-latest
+            TARGET: linux
+            CLANG_TARGET: linux-gnu-ubuntu-20.04
+            JAVA19_HOME: /tmp/deps/jdk-19
 
     steps:
       - name: 'Download JDK 19'
@@ -102,6 +106,39 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: upload platform-specific JAR to artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          path: target/*.jar
+          if-no-files-found: error
+
+  access-jars:
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    steps:
+      - name: 'Check out repository'
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+
+      - name: Set up Homebrew
+        id: set-up-homebrew
+        uses: Homebrew/actions/setup-homebrew@master
+        with:
+          test-bot: false
+      - name: install deps
+        shell: bash
+        run: |
+          make install-deps
+      - name: tesseract version
+        id: version
+        run: echo "::set-output name=version::$(pkg-config --modversion tesseract)"
+
+      - name: download JARs
+        uses: actions/download-artifact@v3
+        with:
+          path: target/jars
+
       - name: 'make release'
         uses: marvinpinto/action-automatic-releases@latest
         with:
@@ -111,4 +148,4 @@ jobs:
           title: jtesseract ${{ steps.version.outputs.version }} release
           files: |
             LICENSE
-            target/*.jar
+            target/jars/artifact/*.jar
