@@ -102,7 +102,7 @@ jobs:
         run: |
           export JAVA_HOME=${{ matrix.JAVA19_HOME }}
           export PATH=${PATH}:/tmp/deps/jextract/build/jextract/bin
-          make release package=com.jtesseract
+          make deploy-jar package=com.jtesseract
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
